@@ -5,7 +5,15 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./comp
 
 export function App() {
   const [copyright, setCopyRight] = useState([]);
-  const userLanguage = navigator.language.split('-')[0]; // Get just the language code (e.g., 'en' from 'en-US')
+  const [time, setTime] = useState(new Date());
+  const userLanguage = navigator.language.split('-')[0];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const fetchWallpaper = async () => {
     const cachedWallpaper = localStorage.getItem("wallpaper");
@@ -38,6 +46,7 @@ export function App() {
       img.src = url;
     });
   }, []);
+
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <img 
@@ -52,7 +61,14 @@ export function App() {
       }
       }}
       />
-      <SearchBar />
+      <div className="flex flex-col items-center justify-center h-full">
+        <div className="relative mb-4 flex flex-row items-end">
+          <h1 className="text-4xl font-extrabold">{time.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false })}</h1>
+            <p className="text-2xl pb-0.5">:{time.toLocaleTimeString('ko-KR', { second: '2-digit', hour12: false }).padStart(2, '0')}</p>
+          
+        </div>
+        <SearchBar />
+      </div>
       <div className="absolute bottom-4 right-4">
         <TooltipProvider>
           <Tooltip>

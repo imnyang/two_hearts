@@ -87,6 +87,7 @@ export default function SearchBar() {
           placeholder="Type something..."
           type="text"
           list="suggestions"
+          title="Powred by Unduck.link"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)} // Update input value
           onKeyDown={(e) => {
