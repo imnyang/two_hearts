@@ -25,7 +25,7 @@ export default function SearchBar() {
     if (!query.trim()) return; // Don't search if the query is empty
 
     // Check if the query is a URL
-    const urlPattern = /^(https?:\/\/)?([a-zA-Z0-9.-]+(:\d+)?)(\/.*)?$/;
+    const urlPattern = /^(https?:\/\/)?((localhost|127\.0\.0\.1|\d{1,3}(\.\d{1,3}){3}|[a-fA-F0-9:]+|[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)(:\d+)?)(\/.*)?$/;
     if (urlPattern.test(query)) {
       // If it's a URL, navigate directly to it
       window.location.href = query.startsWith('http') ? query : `http://${query}`;

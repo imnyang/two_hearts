@@ -94,7 +94,7 @@ export function App() {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <p className="text-muted-foreground hover:text-foreground cursor-help">© Bing Wallpaper</p>
+              <p className="text-muted-foreground hover:text-foreground cursor-help">© Bing</p>
             </TooltipTrigger>
             <TooltipContent align="end">
               <a href={copyright[1]}>
