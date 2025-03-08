@@ -1,0 +1,18 @@
+@import "../styles/globals.css";
+
+@layer base {
+  :root {
+    @apply font-sans;
+  }
+
+  body {
+    @apply min-w-[320px] min-h-screen m-0 bg-background text-foreground;
+  }
+}
+
+input[type="text"]::-webkit-calendar-picker-indicator,
+input[type="email"]::-webkit-calendar-picker-indicator,
+input[type="number"]::-webkit-calendar-picker-indicator, 
+input[type="search"]::-webkit-calendar-picker-indicator {
+    display: none !important;
+}
