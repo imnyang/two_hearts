@@ -92,6 +92,7 @@ export default function SearchBar() {
           onChange={(e) => setInputValue(e.target.value)} // Update input value
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
+              e.preventDefault(); // Prevent the default behavior
               handleSearch(inputValue);
             }
           }} // Trigger search on Enter key press

@@ -2,6 +2,15 @@ import { useEffect, useState } from "react";
 import SearchBar from "./components/searchbar";
 import "./index.css";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./components/ui/tooltip";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Settings } from "lucide-react";
 
 export function App() {
   const [copyright, setCopyRight] = useState([]);
@@ -69,11 +78,23 @@ export function App() {
         </div>
         <SearchBar />
       </div>
-      <div className="absolute bottom-4 right-4">
+      <div className="absolute bottom-4 right-4 flex flex-col items-end gap-1">
+        <Dialog>
+          <DialogTrigger className="flex flex-row gap-1 justify-center items-center text-muted-foreground hover:text-foreground cursor-pointer"><Settings size={16} /><p>Settings</p></DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Settings</DialogTitle>
+              <DialogDescription>
+                
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <p>© Bing Wallpaper</p>
+              <p className="text-muted-foreground hover:text-foreground cursor-help">© Bing Wallpaper</p>
             </TooltipTrigger>
             <TooltipContent align="end">
               <a href={copyright[1]}>
