@@ -2,7 +2,9 @@
 	"manifest_version": 3,
 	"name": ":two_hearts:",
 	"description": "A new tab page with Dynamic Kawaii",
-	"version": "1.0",
+	"repo": "https://github.com/imnyang/two_hearts",
+	"author": "imnyang",
+	"version": "1.1.0",
 	"action": {
 		"default_icon": "icon.png"
 	},
