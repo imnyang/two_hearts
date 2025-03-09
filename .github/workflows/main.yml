@@ -1,13 +1,11 @@
-name: Build and Push Changes
+name: Build and Push Compressed Files
 
 on:
   push:
     branches:
       - main
-    # Skip if the push is from GitHub Actions
     paths-ignore:
-      - ".github/workflows/**"  # Ignore changes to workflow files (optional)
-      - "dist/**"
+      - "dist/**"  # Ignore changes to workflow files
 
 jobs:
   build:
@@ -17,7 +15,7 @@ jobs:
     - name: Check out repository
       uses: actions/checkout@v3
       with:
-        fetch-depth: 0
+        fetch-depth: 0  # Fetch full history to allow pushing back
 
     - name: Set up Bun
       uses: jakevdp/setup-bun@v1
@@ -32,21 +30,31 @@ jobs:
         cd app
         bun run build
 
-    - name: Commit and push changes
+    - name: Compress specific files into a zip file
+      run: |
+        # Create a new directory for the files to be compressed
+        mkdir -p build-artifacts
+
+        # Copy the dist folder, icon.png, LICENSE, and manifest.json to the build-artifacts folder
+        cp -r app/dist build-artifacts/
+        cp app/icon.png build-artifacts/
+        cp app/LICENSE build-artifacts/
+        cp app/manifest.json build-artifacts/
+
+        # Compress the build-artifacts directory into a zip file
+        zip -r build-artifacts.zip build-artifacts/
+
+    - name: Commit and push the compressed zip file
       run: |
         # Configure Git user
         git config --global user.name "GitHub Actions"
         git config --global user.email "github-actions@users.noreply.github.com"
 
         # Check if there are any changes to commit
-        git add -A
-        git diff-index --quiet HEAD || git commit -m "Build update from GitHub Actions"
+        git add build-artifacts.zip
+        git diff-index --quiet HEAD || git commit -m "Add compressed build artifacts"
 
-        # Push changes back to the repository (push only if not from actions)
+        # Push the zip file to the repository
         git push origin main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Prevent action re-trigger (check if commit is from GitHub Actions)
-      if: github.actor != 'github-actions'
-      run: echo "This is a commit by GitHub Actions, so the workflow will not trigger again."
