@@ -34,10 +34,10 @@ jobs:
         mkdir -p two_hearts
 
         # Copy the dist folder, icon.png, LICENSE, and manifest.json to the two_hearts folder
-        cp -r app/dist two_hearts/
-        cp app/icon.png two_hearts/
-        cp app/LICENSE two_hearts/
-        cp app/manifest.json two_hearts/
+        cp -r dist two_hearts/
+        cp icon.png two_hearts/
+        cp LICENSE two_hearts/
+        cp manifest.json two_hearts/
 
         # Compress the two_hearts directory into a zip file
         zip -r two_hearts.zip two_hearts/
