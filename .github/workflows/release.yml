@@ -1,24 +1,22 @@
-name: Publish
+name: Release
 
 on:
   push:
     branches:
-      - release
-    paths-ignore:
-      - "dist/**"  # Ignore changes to workflow files
+      - release  # Adjust the branch name if needed
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
     steps:
     - name: Check out repository
       uses: actions/checkout@v3
       with:
-        fetch-depth: 0  # Fetch full history to allow pushing back
+        fetch-depth: 0  # Fetch full history to allow pushing tags
 
     - name: Set up Bun
-      uses: oven-sh/setup-bun@v2
+      uses: jakevdp/setup-bun@v1
 
     - name: Install dependencies in the app folder
       run: |
@@ -36,37 +34,24 @@ jobs:
         mkdir -p two_hearts
 
         # Copy the dist folder, icon.png, LICENSE, and manifest.json to the two_hearts folder
-        cp -r dist two_hearts/
-        cp icon.png two_hearts/
-        cp LICENSE two_hearts/
-        cp manifest.json two_hearts/
+        cp -r app/dist two_hearts/
+        cp app/icon.png two_hearts/
+        cp app/LICENSE two_hearts/
+        cp app/manifest.json two_hearts/
 
         # Compress the two_hearts directory into a zip file
         zip -r two_hearts.zip two_hearts/
 
-    - name: Upload compressed zip file as artifact
-      uses: actions/upload-artifact@v4
+    - name: Bump version and push tag
+      id: tag_version
+      uses: mathieudutour/github-tag-action@v6.1 
       with:
-        name: two_hearts
-        path: two_hearts
+        github_token: ${{ secrets.GITHUB_TOKEN }} 
 
-    - name: Create GitHub Release
-      id: create_release
-      uses: actions/create-release@v1
+    - name: Create a GitHub release
+      uses: ncipollo/release-action@v1 
       with:
-        tag_name: ${{ github.sha }}
-        release_name: Release ${{ github.sha }}
-        body: |
-          This is a new release containing the latest build.
-        draft: false
-        prerelease: false
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Upload release asset
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./two_hearts.zip
-        asset_name: two_hearts.zip
-        asset_content_type: application/zip
+        tag: ${{ steps.tag_version.outputs.new_tag }}
+        name: Release ${{ steps.tag_version.outputs.new_tag }}
+        body: ${{ steps.tag_version.outputs.changelog }}
+        artifacts: "two_hearts.zip"
