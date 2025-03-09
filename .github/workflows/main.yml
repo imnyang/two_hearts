@@ -1,4 +1,4 @@
-name: Build and Push Compressed Files
+name: Build
 
 on:
   push:
@@ -47,5 +47,5 @@ jobs:
     - name: Upload compressed zip file as artifact
       uses: actions/upload-artifact@v4
       with:
-        name: two_hearts-archive
-        path: two_hearts.zip
+        name: two_hearts
+        path: two_hearts
