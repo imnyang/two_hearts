@@ -18,7 +18,7 @@ jobs:
         fetch-depth: 0  # Fetch full history to allow pushing back
 
     - name: Set up Bun
-      - uses: oven-sh/setup-bun@v2
+      uses: oven-sh/setup-bun@v2
 
     - name: Install dependencies in the app folder
       run: |
