@@ -1,9 +1,9 @@
-name: Build
+name: Publish
 
 on:
   push:
     branches:
-      - main
+      - release
     paths-ignore:
       - "dist/**"  # Ignore changes to workflow files
 
@@ -49,3 +49,24 @@ jobs:
       with:
         name: two_hearts
         path: two_hearts
+
+    - name: Create GitHub Release
+      id: create_release
+      uses: actions/create-release@v1
+      with:
+        tag_name: ${{ github.sha }}
+        release_name: Release ${{ github.sha }}
+        body: |
+          This is a new release containing the latest build.
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload release asset
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./two_hearts.zip
+        asset_name: two_hearts.zip
+        asset_content_type: application/zip
