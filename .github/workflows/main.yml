@@ -1,0 +1,52 @@
+name: Build and Push Changes
+
+on:
+  push:
+    branches:
+      - main
+    # Skip if the push is from GitHub Actions
+    paths-ignore:
+      - ".github/workflows/**"  # Ignore changes to workflow files (optional)
+      - "dist/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Set up Bun
+      uses: jakevdp/setup-bun@v1
+
+    - name: Install dependencies in the app folder
+      run: |
+        cd app
+        bun install
+
+    - name: Build the application
+      run: |
+        cd app
+        bun run build
+
+    - name: Commit and push changes
+      run: |
+        # Configure Git user
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "github-actions@users.noreply.github.com"
+
+        # Check if there are any changes to commit
+        git add -A
+        git diff-index --quiet HEAD || git commit -m "Build update from GitHub Actions"
+
+        # Push changes back to the repository (push only if not from actions)
+        git push origin main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Prevent action re-trigger (check if commit is from GitHub Actions)
+      if: github.actor != 'github-actions'
+      run: echo "This is a commit by GitHub Actions, so the workflow will not trigger again."
