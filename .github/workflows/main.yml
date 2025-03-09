@@ -36,10 +36,10 @@ jobs:
         mkdir -p build-artifacts
 
         # Copy the dist folder, icon.png, LICENSE, and manifest.json to the build-artifacts folder
-        cp -r app/dist build-artifacts/
-        cp app/icon.png build-artifacts/
-        cp app/LICENSE build-artifacts/
-        cp app/manifest.json build-artifacts/
+        cp -r dist build-artifacts/
+        cp icon.png build-artifacts/
+        cp LICENSE build-artifacts/
+        cp manifest.json build-artifacts/
 
         # Compress the build-artifacts directory into a zip file
         zip -r build-artifacts.zip build-artifacts/
