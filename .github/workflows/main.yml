@@ -18,7 +18,7 @@ jobs:
         fetch-depth: 0  # Fetch full history to allow pushing back
 
     - name: Set up Bun
-      uses: jakevdp/setup-bun@v1
+      - uses: oven-sh/setup-bun@v2
 
     - name: Install dependencies in the app folder
       run: |
@@ -57,4 +57,4 @@ jobs:
         # Push the zip file to the repository
         git push origin main
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
