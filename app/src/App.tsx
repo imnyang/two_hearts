@@ -73,7 +73,7 @@ export function App() {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <p>© Bing Wallpaper</p>
+              <p>© Bing</p>
             </TooltipTrigger>
             <TooltipContent align="end">
               <a href={copyright[1]}>
