@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Check out repository
       uses: actions/checkout@v3
@@ -33,28 +33,19 @@ jobs:
     - name: Compress specific files into a zip file
       run: |
         # Create a new directory for the files to be compressed
-        mkdir -p build-artifacts
+        mkdir -p two_hearts
 
-        # Copy the dist folder, icon.png, LICENSE, and manifest.json to the build-artifacts folder
-        cp -r dist build-artifacts/
-        cp icon.png build-artifacts/
-        cp LICENSE build-artifacts/
-        cp manifest.json build-artifacts/
+        # Copy the dist folder, icon.png, LICENSE, and manifest.json to the two_hearts folder
+        cp -r dist two_hearts/
+        cp icon.png two_hearts/
+        cp LICENSE two_hearts/
+        cp manifest.json two_hearts/
 
-        # Compress the build-artifacts directory into a zip file
-        zip -r build-artifacts.zip build-artifacts/
+        # Compress the two_hearts directory into a zip file
+        zip -r two_hearts.zip two_hearts/
 
-    - name: Commit and push the compressed zip file
-      run: |
-        # Configure Git user
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "github-actions@users.noreply.github.com"
-
-        # Check if there are any changes to commit
-        git add build-artifacts.zip
-        git diff-index --quiet HEAD || git commit -m "Add compressed build artifacts"
-
-        # Push the zip file to the repository
-        git push origin main
-      env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+    - name: Upload compressed zip file as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: two_hearts-archive
+        path: two_hearts.zip
