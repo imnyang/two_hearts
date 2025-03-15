@@ -15,5 +15,8 @@
       "@/*": ["./src/*"]
     }
   },
+  "typeAcquisition": {
+    "include": ["chrome"]
+  },
   "include": ["**/*.ts", "**/*.tsx"]
 }

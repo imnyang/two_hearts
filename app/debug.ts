@@ -1,19 +1,32 @@
 import chokidar from 'chokidar';
-import { exec } from 'child_process';
+import { exec, ChildProcess } from 'child_process';
 
-// 워치할 디렉터리 설정
+let buildProcess: ChildProcess | null = null;
+let isBuilding = false;
+
 const watcher = chokidar.watch('./src', { ignored: /^\./, persistent: true });
 
 watcher.on('change', (path) => {
     console.log(`${path} has been changed`);
 
-    // 변경 시 build 명령어 실행
-    exec('bun run build', (error, stdout, stderr) => {
-    if (error) {
-        console.error(`exec error: ${error}`);
-        return;
+    if (isBuilding && buildProcess) {
+        console.log('Killing the previous build process...');
+        buildProcess.kill();
     }
-    console.log(`stdout: ${stdout}`);
-    console.error(`stderr: ${stderr}`);
-    });
+
+    isBuilding = true;
+
+    // Wait for a short period before starting the build
+    setTimeout(() => {
+        buildProcess = exec('bun run build', (error, stdout, stderr) => {
+            isBuilding = false;
+
+            if (error) {
+                console.error(`exec error: ${error}`);
+                return;
+            }
+            console.log(`stdout: ${stdout}`);
+            console.error(`stderr: ${stderr}`);
+        });
+    }, 1000); // Wait for 1 second before starting the build
 });

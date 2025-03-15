@@ -33,7 +33,14 @@ export default function SearchBar() {
     }
 
     // Otherwise, perform the search
-    window.location.href = `https://unduck.link?q=${encodeURIComponent(query)}`;
+    chrome.search.query({
+      text: query,
+      disposition: "CURRENT_TAB"
+    }, function() {
+      if (chrome.runtime.lastError) {
+        console.error(chrome.runtime.lastError);
+      }
+    });
   };
 
   // Function to make the request to Google Suggest API
@@ -92,6 +99,7 @@ export default function SearchBar() {
           onChange={(e) => setInputValue(e.target.value)} // Update input value
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
+              e.preventDefault(); // Prevent the default behavior
               handleSearch(inputValue);
             }
           }} // Trigger search on Enter key press
