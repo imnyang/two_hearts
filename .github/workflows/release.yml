@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - release  # Adjust the branch name if needed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  # Fetch full history to allow pushing tags
+
+    - name: Set up Bun
+      uses: oven-sh/setup-bun@v2
+
+    - name: Install dependencies in the app folder
+      run: |
+        cd app
+        bun install
+
+    - name: Build the application
+      run: |
+        cd app
+        bun run build
+
+    - name: Compress specific files into a zip file
+      run: |
+        # Create a new directory for the files to be compressed
+        mkdir -p two_hearts
+
+        # Copy the dist folder, icon.png, LICENSE, and manifest.json to the two_hearts folder
+        cp -r dist two_hearts/
+        cp icon.png two_hearts/
+        cp LICENSE two_hearts/
+        cp manifest.json two_hearts/
+
+        # Compress the two_hearts directory into a zip file
+        zip -r two_hearts.zip two_hearts/
+
+    - name: Bump version and push tag
+      id: tag_version
+      uses: mathieudutour/github-tag-action@v6.1 
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }} 
+      
+    - name: Create a GitHub release
+      uses: ncipollo/release-action@v1 
+      with:
+        tag: ${{ steps.tag_version.outputs.new_tag }}
+        name: Release ${{ steps.tag_version.outputs.new_tag }}
+        body: ${{ steps.tag_version.outputs.changelog }}
+        artifacts: "two_hearts.zip"
