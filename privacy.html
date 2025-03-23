@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark light">
+    <title>Two Hearts 개인정보 처리방침</title>
+</head>
+<body>
+    <script>
+        function getLanguage() {
+            return navigator.language || navigator.userLanguage;
+        }
+
+        function toggleLanguage() {
+            const lang = getLanguage().startsWith('ko') ? 'ko' : 'en';
+            document.getElementById('ko').style.display = lang === 'ko' ? 'block' : 'none';
+            document.getElementById('en').style.display = lang === 'en' ? 'block' : 'none';
+        }
+
+        window.onload = toggleLanguage;
+    </script>
+    
+    <div id="ko">
+        <h1>개인정보 처리방침</h1>
+        <div>
+            <h2>0. 개요</h2>
+            <p>본 개인정보 처리방침은 2025년 3월 14일부터 적용됩니다.</p>
+            <p>Two Hearts(이하 "서비스")는 대한민국 「개인정보 보호법」 제30조에 따라 이용자의 개인정보를 보호하고, 관련 법령을 준수하고 있습니다.</p>
+            <h2>1. 수집하는 개인정보</h2>
+            <ul>
+                <li><strong>검색어 자동완성 기능 사용 시</strong>
+                    <ul>
+                        <li>검색어</li>
+                        <li>사용자의 IP 주소</li>
+                        <li>브라우저 및 운영체제 정보</li>
+                    </ul>
+                </li>
+            </ul>
+            <h2>2. 개인정보의 이용 목적</h2>
+            <ul>
+                <li>검색어 자동완성 기능 제공</li>
+                <li>서비스의 보안 유지 및 향상</li>
+            </ul>
+            <h2>3. 개인정보의 보유 및 파기</h2>
+            <p>서비스는 이용자의 개인정보를 일주일 이내에 파기합니다.</p>
+            <h2>4. 개인정보의 제3자 제공</h2>
+            <h3>4.1. 배경 이미지</h3>
+            <p>이 서비스는 배경 이미지를 제공하기 위해 사용자의 브라우저가 특정 외부 서버에 요청을 보낼 수 있습니다.</p>
+            <h3>4.2. 검색 엔진</h3>
+            <p>서비스는 사용자의 검색어를 저장하지 않으며, 입력된 검색어는 사용자가 설정한 기본 검색 엔진으로 직접 전송됩니다.</p>
+            <h2>5. 개인정보 문의</h2>
+            <p>이메일: <a href="mailto:support+twohearts@al-1s.kr">support+twohearts@al-1s.kr</a></p>
+        </div>
+    </div>
+    
+    <div id="en" style="display: none;">
+        <h1>Privacy Policy</h1>
+        <div>
+            <h2>0. Overview</h2>
+            <p>This Privacy Policy has been in effect since March 14, 2025.</p>
+            <p>Two Hearts (the "Service") complies with South Korea's Personal Information Protection Act to protect users' personal information and adhere to relevant regulations.</p>
+            <h2>1. Collected Personal Information</h2>
+            <ul>
+                <li><strong>When using search autocomplete</strong>
+                    <ul>
+                        <li>Search queries</li>
+                        <li>User's IP address</li>
+                        <li>Browser and operating system information</li>
+                    </ul>
+                </li>
+            </ul>
+            <h2>2. Purpose of Personal Information Usage</h2>
+            <ul>
+                <li>Providing search autocomplete functionality</li>
+                <li>Maintaining and enhancing service security</li>
+            </ul>
+            <h2>3. Retention and Deletion of Personal Information</h2>
+            <p>The service deletes collected personal information within one week.</p>
+            <h2>4. Third-Party Sharing of Personal Information</h2>
+            <h3>4.1. Background Images</h3>
+            <p>The service may request background images from external servers.</p>
+            <h3>4.2. Search Engine</h3>
+            <p>The service does not store user search queries. All queries are redirected to the search engine set by the user.</p>
+            <h2>5. Contact for Personal Information Inquiries</h2>
+            <p>Email: <a href="mailto:support+twohearts@al-1s.kr">support+twohearts@al-1s.kr</a></p>
+        </div>
+    </div>
+</body>
+</html>

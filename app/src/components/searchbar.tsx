@@ -7,6 +7,10 @@ export default function SearchBar() {
   const emoji = ["♥️", "🩷", "🧡", "💛", "💚", "💙", "🩵", "💜", "🤎", "🖤", "🩶", "🤍", "❤️‍🔥", "❤️‍🩹", "❣️", "💕", "💞", "💓", "💗", "💖", "💘", "💝", "💟"];
 
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [disableAutocomplete, setDisableAutoComplete] = useState(() => {
+    const storedAutoComplete = localStorage.getItem("disableautocomplete");
+    return storedAutoComplete === "true";
+  });
   const [inputValue, setInputValue] = useState("");
   const [randomEmoji, setRandomEmoji] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -43,11 +47,10 @@ export default function SearchBar() {
     });
   };
 
-  // Function to make the request to Google Suggest API
   const fetchSearchSuggestions = (query: string) => {
-    if (!query.trim()) return; // Don't fetch if the query is empty
+    if (disableAutocomplete || !query.trim()) return; // Don't fetch if autocomplete is disabled or the query is empty
     const searchURL = `https://api.imnya.ng/google/complete?hl=${userLanguage}&q=${encodeURIComponent(query)}`;
-
+  
     // Make a request to fetch the search suggestions
     fetch(searchURL, {
       headers: {
@@ -71,6 +74,7 @@ export default function SearchBar() {
         console.error("Error fetching search suggestions:", error);
       });
   };
+  
 
   // useEffect to call fetchSearchSuggestions whenever the input changes
   useEffect(() => {
@@ -104,11 +108,14 @@ export default function SearchBar() {
             }
           }} // Trigger search on Enter key press
         />
-        <datalist id="suggestions">
-          {suggestions.map((suggestion, index) => (
-            <option key={index} value={suggestion} />
-          ))}
-        </datalist>
+        {!disableAutocomplete && (
+          <datalist id="suggestions">
+            {suggestions.map((suggestion, index) => (
+              <option key={index} value={suggestion} />
+            ))}
+          </datalist>
+        )}
+
         <Label className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">{randomEmoji}</Label>
 
         {inputValue && (
