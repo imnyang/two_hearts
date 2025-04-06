@@ -31,6 +31,10 @@ export function App() {
     const storedBingChecked = localStorage.getItem("customWallpaper");
     return storedBingChecked === "true";
   });
+  const [haveCustomWallpaper, setHaveCustomWallpaper] = useState(() => {
+    const storedCustomWallpaper = localStorage.getItem("customWallpaperURL");
+    return storedCustomWallpaper !== null;
+  });
   const [wallpaper, setWallpaper] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -54,19 +58,21 @@ export function App() {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     localStorage.setItem("customWallpaperURL", value);
+    localStorage.removeItem("wallpaperDate");
+    localStorage.removeItem("copyright");
+    localStorage.removeItem("copyright_link");
     setWallpaper(value);
   }
 
   const fetchWallpaper = async () => {
-    const customWallpaper = localStorage.getItem("customWallpaperURL");
-    if (customWallpaper) {
-      setWallpaper(customWallpaper);
-      return customWallpaper;
-    }
     const BingWallpaper = localStorage.getItem("customWallpaper");
     if (BingWallpaper) {
+      const customWallpaper = localStorage.getItem("customWallpaperURL");
+      if (customWallpaper) {
+        setWallpaper(customWallpaper);
+      }
       setBingChecked(true);
-      return BingWallpaper;
+      return customWallpaper;
     }
 
     const cachedWallpaper = localStorage.getItem("wallpaper");
@@ -100,14 +106,17 @@ export function App() {
     });
   }, []);
 
+  console.log("BingChecked", BingChecked);
+  console.log("haveCustomWallpaper", haveCustomWallpaper);
+
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <img 
       alt="bing-wallpaper" 
-      className={`object-cover w-full h-full absolute blur-xs transition-opacity duration-1000 ${BingChecked ? 'hidden' : 'opacity-0'}`} 
+      className={`object-cover w-full h-full absolute blur-xs transition-opacity duration-1000 ${(BingChecked && !haveCustomWallpaper) ? 'hidden' : 'opacity-0'}`} 
       onLoad={(e) => {
       const img = e.currentTarget as HTMLImageElement;
-      if (img.naturalWidth < 1920) {
+      if (img.naturalWidth < 500) {
       img.src = "http://bingw.jasonzeng.dev/?index=random";
       } else {
       img.style.opacity = '1';
@@ -119,7 +128,22 @@ export function App() {
 
         <SearchBar />
       </div>
-      <div className="absolute bottom-4 right-4 flex flex-col items-end gap-1">
+      
+      <div className="absolute bottom-4 right-4 flex flex-col items-end gap-1 bg-background/1 backdrop-blur-sm rounded-md p-2">
+      {!BingChecked && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <p className="text-muted-foreground hover:text-foreground cursor-help">© Bing</p>
+              </TooltipTrigger>
+              <TooltipContent align="end">
+                <a href={copyright[1]}>
+                  <p>{copyright[0]}</p>
+                </a>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
         <Dialog>
           <DialogTrigger className="flex flex-row gap-1 justify-center items-center text-muted-foreground hover:text-foreground cursor-pointer"><Settings size={16} /><p>Settings</p></DialogTrigger>
           <DialogContent>
@@ -204,19 +228,6 @@ export function App() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <p className="text-muted-foreground hover:text-foreground cursor-help">© Bing</p>
-            </TooltipTrigger>
-            <TooltipContent align="end">
-              <a href={copyright[1]}>
-                <p>{copyright[0]}</p>
-              </a>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
       </div>
     </div>
   );
