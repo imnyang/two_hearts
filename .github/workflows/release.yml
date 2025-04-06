@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - release  # Adjust the branch name if needed
+      - main  # Adjust the branch name if needed
   workflow_dispatch:
 
 jobs:
