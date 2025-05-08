@@ -3,7 +3,7 @@
 	"name": "Two Hearts - A new tab page with Dynamic Kawaii",
 	"description": "A new tab page with Dynamic Kawaii",
 	"author": "imnyang",
-	"version": "1.2.0",
+	"version": "2.0.0",
 	"action": {
 		"default_icon": "icon.png"
 	},

@@ -4,15 +4,12 @@ import { Input } from "./ui/input";
 import { ArrowRightIcon, CircleXIcon } from "lucide-react";
 
 export default function SearchBar() {
-  const emoji = ["♥️", "🩷", "🧡", "💛", "💚", "💙", "🩵", "💜", "🤎", "🖤", "🩶", "🤍", "❤️‍🔥", "❤️‍🩹", "❣️", "💕", "💞", "💓", "💗", "💖", "💘", "💝", "💟"];
-
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [disableAutocomplete, setDisableAutoComplete] = useState(() => {
     const storedAutoComplete = localStorage.getItem("disableautocomplete");
     return storedAutoComplete === "true";
   });
   const [inputValue, setInputValue] = useState("");
-  const [randomEmoji, setRandomEmoji] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Get the user's browser language
@@ -86,7 +83,6 @@ export default function SearchBar() {
     if (inputRef.current) {
       inputRef.current.focus();
     }
-    setRandomEmoji(emoji[Math.floor(Math.random() * emoji.length)]);
   }, []);
 
   return (
@@ -116,7 +112,7 @@ export default function SearchBar() {
           </datalist>
         )}
 
-        <Label className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">{randomEmoji}</Label>
+        <Label className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">💕</Label>
 
         {inputValue && (
           <button
