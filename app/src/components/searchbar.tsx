@@ -5,6 +5,7 @@ import { ArrowRightIcon, CircleXIcon } from "lucide-react";
 
 export default function SearchBar() {
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [activeIndex, setActiveIndex] = useState(-1);
   const [disableAutocomplete, setDisableAutoComplete] = useState(() => {
     const storedAutoComplete = localStorage.getItem("disableautocomplete");
     return storedAutoComplete === "true";
@@ -46,26 +47,23 @@ export default function SearchBar() {
 
   const fetchSearchSuggestions = (query: string) => {
     if (disableAutocomplete || !query.trim()) return; // Don't fetch if autocomplete is disabled or the query is empty
-    const searchURL = `https://api.imnya.ng/google/complete?hl=${userLanguage}&q=${encodeURIComponent(query)}`;
-  
+    const searchURL = `https://search.istp-imnyang.workers.dev/hint/${encodeURIComponent(query)}`;
+
     // Make a request to fetch the search suggestions
-    fetch(searchURL, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': '*',
-        'Access-Control-Allow-Headers': '*',
-        'Access-Control-Allow-Credentials': 'true'
-      }
-    })
-      .then((response) => response.text()) // We use `.text()` since it's a toolbar API that returns XML
+    fetch(searchURL)
+      .then((response) => response.json())
       .then((data) => {
-        // Handle the suggestions response here
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(data, "text/xml");
-        const suggestions = Array.from(xmlDoc.getElementsByTagName("suggestion")).map(
-          (suggestion) => suggestion.getAttribute("data")
-        );
-        setSuggestions(suggestions); // Update the suggestions state
+        if (Array.isArray(data)) {
+          setSuggestions(data);
+          return;
+        }
+
+        if (Array.isArray(data?.suggestions)) {
+          setSuggestions(data.suggestions);
+          return;
+        }
+
+        setSuggestions([]);
       })
       .catch((error) => {
         console.error("Error fetching search suggestions:", error);
@@ -77,6 +75,10 @@ export default function SearchBar() {
   useEffect(() => {
     fetchSearchSuggestions(inputValue);
   }, [inputValue]);
+
+  useEffect(() => {
+    setActiveIndex(-1);
+  }, [suggestions]);
 
   // useEffect to focus the input when the component mounts
   useEffect(() => {
@@ -93,23 +95,57 @@ export default function SearchBar() {
           className="ps-9 pe-9 bg-background"
           placeholder="Type something..."
           type="text"
-          list="suggestions"
           title="Powred by Unduck.link"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)} // Update input value
           onKeyDown={(e) => {
-            if (e.key === 'Enter') {
+            if (e.key === "ArrowDown" && suggestions.length > 0) {
+              e.preventDefault();
+              setActiveIndex((prev) => (prev + 1) % suggestions.length);
+              return;
+            }
+
+            if (e.key === "ArrowUp" && suggestions.length > 0) {
+              e.preventDefault();
+              setActiveIndex((prev) =>
+                prev <= 0 ? suggestions.length - 1 : prev - 1
+              );
+              return;
+            }
+
+            if (e.key === "Escape") {
+              setSuggestions([]);
+              return;
+            }
+
+            if (e.key === "Enter") {
               e.preventDefault(); // Prevent the default behavior
+              if (activeIndex >= 0 && suggestions[activeIndex]) {
+                handleSearch(suggestions[activeIndex]);
+                return;
+              }
               handleSearch(inputValue);
             }
           }} // Trigger search on Enter key press
         />
-        {!disableAutocomplete && (
-          <datalist id="suggestions">
+        {!disableAutocomplete && suggestions.length > 0 && (
+          <div className="absolute bottom-full z-10 mb-2 w-full max-h-[50vh] overflow-y-auto rounded-2xl border border-border/60 bg-background/80 p-2 text-foreground shadow-lg backdrop-blur">
             {suggestions.map((suggestion, index) => (
-              <option key={index} value={suggestion} />
+              <button
+                key={`${suggestion}-${index}`}
+                type="button"
+                className={`flex w-full items-center rounded-xl border px-3 py-2 text-left text-sm transition ${
+                  index === activeIndex
+                    ? "border-border bg-muted"
+                    : "border-transparent hover:border-border/60 hover:bg-muted/60"
+                }`}
+                onMouseEnter={() => setActiveIndex(index)}
+                onClick={() => handleSearch(suggestion)}
+              >
+                {suggestion}
+              </button>
             ))}
-          </datalist>
+          </div>
         )}
 
         <Label className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">💕</Label>
